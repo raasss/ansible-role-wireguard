@@ -1,0 +1,22 @@
+---
+- name: Install packages
+  apt:
+    name:
+      - wireguard
+    install_recommends: no
+    state: present
+
+- name: Configure /etc/wireguard/wg0.conf
+  copy:
+    content: "{{ wireguard_wg0 }}"
+    dest: "/etc/wireguard/wg0.conf"
+    mode: 0600
+    owner: root
+    group: root
+  notify: restart wireguard
+
+- name: Enable and start service
+  service:
+    name: wg-quick@wg0
+    state: started
+    enabled: yes
